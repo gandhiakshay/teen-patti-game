@@ -77,49 +77,27 @@ public class PokerTable {
 	}
 	
 	public void cardIdentify() {
-		int temp=0,k=0;
+		int k=0;
 		int seq[] = new int[3];
 		String orinalCard;
 		
 		for(int j=0;j<finalList.size();j++) {
-		
-			orinalCard = finalList.get(pl.getPlayers().get(j)).toString();
-			String c1 = finalList.get(pl.getPlayers().get(j)).get(temp).toString();
-			String c2 = finalList.get(pl.getPlayers().get(j)).get(temp+1).toString();
-			String c3 = finalList.get(pl.getPlayers().get(j)).get(temp+2).toString();
+			String player = pl.getPlayers().get(j);
+			List<String> playerCards = finalList.get(pl.getPlayers().get(j));
 			
-			String ca1 = finalList.get(pl.getPlayers().get(j)).get(temp).toString();
-			String ca2 = finalList.get(pl.getPlayers().get(j)).get(temp+1).toString();
-			String ca3 = finalList.get(pl.getPlayers().get(j)).get(temp+2).toString();
+			orinalCard = finalList.get(player).toString();
+			String first = playerCards.get(0);
+			String second = playerCards.get(1);
+			String third = playerCards.get(2);
 			
-			String d1="";
-			String d2="";
-			String d3="";
+			String c1 = first.substring(0, 1);
+			String c2 = second.substring(0, 1);
+			String c3 = third.substring(0, 1);
 			
-			if(c1.length() == 3) {
-				c1=c1.substring(2);
-				d1=ca1.substring(0, 2);
-			}else{
-				c1=c1.substring(1);
-				d1=ca1.substring(0, 1);
-			}
-			
-			if(c2.length() == 3) {
-				c2=c2.substring(2);
-				d2=ca2.substring(0, 2);
-			}else{
-				c2=c2.substring(1);
-				d2=ca2.substring(0, 1);
-			}
-			
-			if(c3.length() == 3){
-				c3=c3.substring(2);
-				d3=ca3.substring(0, 2);
-			}else{
-				c3=c3.substring(1);
-				d3=ca3.substring(0, 1);
-			}
-			
+			String d1 = first.substring(1);
+			String d2 = second.substring(1);
+			String d3 = third.substring(1);
+						
 			seq[0] = cardValue(d1);
 			seq[1] = cardValue(d2);
 			seq[2] = cardValue(d3);
@@ -133,44 +111,42 @@ public class PokerTable {
 			}
 			int total=0;
 			int sum = 0;
-			if(d1.equals(d2) && d2.equals(d3) && d3.equals(d1)) { //For Triple
+			if (d1.equals(d2) && d2.equals(d3)) { //For Triple
 				total = total + 5000000;
-				sum=priority(seq,total,sum);
+				sum = priority(seq,total,sum);
 				System.out.println("Reason : Triple");
 				
-			}else if(seq[0]+1 == seq[1] && seq[0]+2 == seq[2]) { //For Sequence
-				total = total + 3000000;
+			} else if(seq[0]+1 == seq[1] && seq[0]+2 == seq[2]) { //For Sequence
+				total = total + 3000000;				
 				if(seq[0] == 1 && seq[1] == 2 && seq[2] == 3) {
 					seq[0] = 2;
 					seq[1] = 3;
 					seq[2] = 14;
-				}
+				}				
 				if(c1.equals(c2) && c2.equals(c3) && c3.equals(c1)) {
 					total = total + 2500000;
-					sum=priority(seq,total,sum);
+					sum = priority(seq,total,sum);
 					System.out.println("Reason : Pure Sequence");
-				}
-				sum=priority(seq,total,sum);
-				System.out.println("Reason : Sequence");
-				
-			}else if(c1.equals(c2) && c2.equals(c3) && c3.equals(c1)) { // For Color
+				}				
+				sum = priority(seq,total,sum);
+				System.out.println("Reason : Sequence");				
+			} else if(c1.equals(c2) && c2.equals(c3) && c3.equals(c1)) { // For Color
 				total = total + 1000000;
-				sum=priority(seq,total,sum);
-				System.out.println("Reason : Color");
-				
-			}else if(d1.equals(d2) || d2.equals(d3) || d3.equals(d1)) {
+				sum = priority(seq,total,sum);
+				System.out.println("Reason : Color");				
+			} else if(d1.equals(d2) || d2.equals(d3) || d3.equals(d1)) {
 				total = total + 500000;
 				k = seq[1];
-				for(int i=1;i<=14;i++) {
+				for(int i = 1; i <= 14; i++) {
 					if(k == i) {
 						sum = total + seq[0] + seq[1] + seq[2] + (k * k * k);
+						break;
 					}
 				}
-				System.out.println("Reason : Double");
-				
-			}else {
-				sum=priority(seq,total,sum);
-				System.out.println("Reason : Priority");
+				System.out.println("Reason : Double");				
+			} else {
+				sum = priority(seq,total,sum);
+				System.out.println("Reason : Higher Order");
 			}
 			System.out.println("Player : " + pl.getPlayers().get(j));
 			System.out.println("Priority : " + total);
@@ -182,34 +158,18 @@ public class PokerTable {
 	}
 	
 	public int priority(int seq[],int total,int sum) {
-		if(seq[0] == 14 || seq[1] == 14 || seq[2] == 14){
-			sum = total + seq[0] + seq[1] + seq[2] + 100000;
-		}else if(seq[0] == 13 || seq[1] == 13 || seq[2] == 13){
-			sum = total + seq[0] + seq[1] + seq[2] + 80000;
-		}else if(seq[0] == 12 || seq[1] == 12 || seq[2] == 12){
-			sum = total + seq[0] + seq[1] + seq[2] + 60000;
-		}else if(seq[0] == 11 || seq[1] == 11 || seq[2] == 11){
-			sum = total + seq[0] + seq[1] + seq[2] + 40000;
-		}else if(seq[0] == 10 || seq[1] == 10 || seq[2] == 10){
-			sum = total + seq[0] + seq[1] + seq[2] + 20000;
-		}else if(seq[0] == 9 || seq[1] == 9 || seq[2] == 9){
-			sum = total + seq[0] + seq[1] + seq[2] + 10000;
-		}else if(seq[0] == 8 || seq[1] == 8 || seq[2] == 8){
-			sum = total + seq[0] + seq[1] + seq[2] + 8000;
-		}else if(seq[0] == 7 || seq[1] == 7 || seq[2] == 7){
-			sum = total + seq[0] + seq[1] + seq[2] + 6000;
-		}else if(seq[0] == 6 || seq[1] == 6 || seq[2] == 6){
-			sum = total + seq[0] + seq[1] + seq[2] + 4000;
-		}else if(seq[0] == 5 || seq[1] == 5 || seq[2] == 5){
-			sum = total + seq[0] + seq[1] + seq[2] + 2000;
-		}else if(seq[0] == 4 || seq[1] == 4 || seq[2] == 4){
-			sum = total + seq[0] + seq[1] + seq[2] + 1000;
-		}else if(seq[0] == 3 || seq[1] == 3 || seq[2] == 3){
-			sum = total + seq[0] + seq[1] + seq[2] + 800;
-		}else if(seq[0] == 2 || seq[1] == 2 || seq[2] == 2){
-			sum = total + seq[0] + seq[1] + seq[2] + 600;
+		int minSeq = 2;
+		int maxSeq = 14;
+		int[] seqValues = {600, 800, 1000, 2000, 4000, 6000, 8000, 10000, 20000, 40000, 60000, 80000, 100000};
+		total = total + seq[0] + seq[1] + seq[2];
+		
+		for(int i = minSeq; i <= maxSeq; i++) {
+			if (seq[2] == i) {
+				total += seqValues[i-minSeq];
+				break;
+			}
 		}
-		return sum;
+		return total;
 	}
 	
 	public void result() {
