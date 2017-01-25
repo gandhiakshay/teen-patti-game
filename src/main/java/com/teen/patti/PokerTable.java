@@ -182,34 +182,18 @@ public class PokerTable {
 	}
 	
 	public int priority(int seq[],int total,int sum) {
-		if(seq[0] == 14 || seq[1] == 14 || seq[2] == 14){
-			sum = total + seq[0] + seq[1] + seq[2] + 100000;
-		}else if(seq[0] == 13 || seq[1] == 13 || seq[2] == 13){
-			sum = total + seq[0] + seq[1] + seq[2] + 80000;
-		}else if(seq[0] == 12 || seq[1] == 12 || seq[2] == 12){
-			sum = total + seq[0] + seq[1] + seq[2] + 60000;
-		}else if(seq[0] == 11 || seq[1] == 11 || seq[2] == 11){
-			sum = total + seq[0] + seq[1] + seq[2] + 40000;
-		}else if(seq[0] == 10 || seq[1] == 10 || seq[2] == 10){
-			sum = total + seq[0] + seq[1] + seq[2] + 20000;
-		}else if(seq[0] == 9 || seq[1] == 9 || seq[2] == 9){
-			sum = total + seq[0] + seq[1] + seq[2] + 10000;
-		}else if(seq[0] == 8 || seq[1] == 8 || seq[2] == 8){
-			sum = total + seq[0] + seq[1] + seq[2] + 8000;
-		}else if(seq[0] == 7 || seq[1] == 7 || seq[2] == 7){
-			sum = total + seq[0] + seq[1] + seq[2] + 6000;
-		}else if(seq[0] == 6 || seq[1] == 6 || seq[2] == 6){
-			sum = total + seq[0] + seq[1] + seq[2] + 4000;
-		}else if(seq[0] == 5 || seq[1] == 5 || seq[2] == 5){
-			sum = total + seq[0] + seq[1] + seq[2] + 2000;
-		}else if(seq[0] == 4 || seq[1] == 4 || seq[2] == 4){
-			sum = total + seq[0] + seq[1] + seq[2] + 1000;
-		}else if(seq[0] == 3 || seq[1] == 3 || seq[2] == 3){
-			sum = total + seq[0] + seq[1] + seq[2] + 800;
-		}else if(seq[0] == 2 || seq[1] == 2 || seq[2] == 2){
-			sum = total + seq[0] + seq[1] + seq[2] + 600;
+		int minSeq = 2;
+		int maxSeq = 14;
+		int[] seqValues = {600, 800, 1000, 2000, 4000, 6000, 8000, 10000, 20000, 40000, 60000, 80000, 100000};
+		total = total + seq[0] + seq[1] + seq[2];
+		
+		for(int i = minSeq; i <= maxSeq; i++) {
+			if (seq[2] == i) {
+				total += seqValues[i-minSeq];
+				break;
+			}
 		}
-		return sum;
+		return total;
 	}
 	
 	public void result() {
