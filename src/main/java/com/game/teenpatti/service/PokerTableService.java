@@ -19,7 +19,7 @@ public class PokerTableService {
   private List<String> randCardsList = new ArrayList<>();
   private List<String> playerList = new ArrayList<>();
   private List<String> cardList = new ArrayList<>();
-  private Map<String, List<String>> finalList = new HashMap<>();
+  private Map<String, List<String>> finalMap = new HashMap<>();
   private List<Game> result = new ArrayList<Game>();
 
   public void addPlayers(String name) {
@@ -60,7 +60,7 @@ public class PokerTableService {
       if (i == 17) {
         break;
       }
-      finalList.put(
+      finalMap.put(
           playerService.getPlayers().get(i),
           Arrays.asList(cardList.get(c++), cardList.get(c++), cardList.get(c++)));
     }
@@ -88,11 +88,11 @@ public class PokerTableService {
     int seq[] = new int[3];
     String orinalCard;
 
-    for (int j = 0; j < finalList.size(); j++) {
+    for (int j = 0; j < finalMap.size(); j++) {
       String pl = playerService.getPlayers().get(j);
-      List<String> playerCards = finalList.get(playerService.getPlayers().get(j));
+      List<String> playerCards = finalMap.get(playerService.getPlayers().get(j));
 
-      orinalCard = finalList.get(pl).toString();
+      orinalCard = finalMap.get(pl).toString();
       String first = playerCards.get(0);
       String second = playerCards.get(1);
       String third = playerCards.get(2);
@@ -137,11 +137,13 @@ public class PokerTableService {
         }
         sum = priority(seq, total, sum);
         System.out.println("Reason : Sequence");
+
       } else if (c1.equals(c2) && c2.equals(c3) && c3.equals(c1)) { // For Color
         total = total + 1000000;
         sum = priority(seq, total, sum);
         System.out.println("Reason : Color");
-      } else if (d1.equals(d2) || d2.equals(d3) || d3.equals(d1)) {
+
+      } else if (d1.equals(d2) || d2.equals(d3) || d3.equals(d1)) { // For Double
         total = total + 500000;
         k = seq[1];
         for (int i = 1; i <= 14; i++) {
@@ -151,10 +153,12 @@ public class PokerTableService {
           }
         }
         System.out.println("Reason : Double");
+
       } else {
         sum = priority(seq, total, sum);
         System.out.println("Reason : Higher Order");
       }
+
       System.out.println("Player : " + playerService.getPlayers().get(j));
       System.out.println("Priority : " + total);
       System.out.println("Sum : " + sum);
@@ -171,8 +175,17 @@ public class PokerTableService {
     };
     total = total + seq[0] + seq[1] + seq[2];
 
+    if (seq[2] == Cards.ONE.getVal()) {
+      total += seqValues[maxSeq - minSeq];
+    }
+
     for (int i = minSeq; i <= maxSeq; i++) {
-      if (seq[2] == i) {
+      if (seq[2] == Cards.ONE.getVal()) {
+        if (seq[1] == i) {
+          total += seqValues[i - minSeq];
+          break;
+        }
+      } else if (seq[2] == i) {
         total += seqValues[i - minSeq];
         break;
       }
