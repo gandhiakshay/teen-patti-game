@@ -1,13 +1,13 @@
-package com.teen.patti;
+package com.game.teenpatti.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Players {
+public class PlayerService {
 
-  List<String> players = new ArrayList<>();
+  private List<String> players = new ArrayList<>();
 
-  public Players() {
+  public PlayerService() {
     super();
   }
 

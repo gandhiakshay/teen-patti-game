@@ -1,5 +1,8 @@
-package com.teen.patti;
+package com.game.teenpatti.service;
 
+import com.game.teenpatti.model.Cards;
+import com.game.teenpatti.model.Game;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,66 +11,68 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PokerTable {
+public class PokerTableService {
 
-  Deck deck = null;
-  Players pl = null;
+  @Inject private DeckService deckService;
+  @Inject private PlayerService playerService;
 
-  List<String> randCardsList = new ArrayList<>();
-  List<String> playerList = new ArrayList<>();
-  List<String> cardList = new ArrayList<>();
-  Map<String, List<String>> finalList = new HashMap<>();
-  List<Game> result = new ArrayList<Game>();
-
-  public PokerTable() {
-    super();
-    deck = new Deck();
-    pl = new Players();
-  }
+  private List<String> randCardsList = new ArrayList<>();
+  private List<String> playerList = new ArrayList<>();
+  private List<String> cardList = new ArrayList<>();
+  private Map<String, List<String>> finalList = new HashMap<>();
+  private List<Game> result = new ArrayList<Game>();
 
   public void addPlayers(String name) {
-    pl.addPlayers(name);
+    playerService.addPlayers(name);
   }
 
   public void shuffle() {
-    Collections.shuffle(deck.getCollectionCards());
-    randCardsList.addAll(deck.getCollectionCards());
-  }
-
-  public List<String> getRandCardsList() {
-    return randCardsList;
-  }
-
-  public List<Game> getResult() {
-    return result;
+    Collections.shuffle(deckService.getCollectionCards());
+    randCardsList.addAll(deckService.getCollectionCards());
   }
 
   public void setPlayerCard() {
     shuffle();
-    Integer nop = pl.getPlayers().size();
+    Integer nop = playerService.getPlayers().size();
+    if (nop > 17) {
+      System.err.println(
+          "WARNING : Total players are " + nop + ". So, Max 17 players can play from one deck.");
+      nop = 17;
+    }
+    System.out.println("Playing Players");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     for (int i = 0; i < nop; i++) {
       int t = i;
-      playerList.add(pl.getPlayers().get(i));
-      System.out.println(pl.getPlayers().get(i));
+      playerList.add(playerService.getPlayers().get(i));
+      System.out.print("☺ " + playerService.getPlayers().get(i) + " : ");
       for (int j = 0; j < 3; j++) {
-        cardList.add(getRandCardsList().get(t));
-        System.out.println(getRandCardsList().get(t));
+        cardList.add(randCardsList.get(t));
+        System.out.print(randCardsList.get(t) + " ");
         t += nop;
       }
+      System.out.println("");
     }
     // System.out.println(playerList);
     // System.out.println(cardList);
 
     int c = 0;
-    for (int i = 0; i < pl.getPlayers().size(); i++) {
+    for (int i = 0; i < playerService.getPlayers().size(); i++) {
+      if (i == 17) {
+        break;
+      }
       finalList.put(
-          pl.getPlayers().get(i),
+          playerService.getPlayers().get(i),
           Arrays.asList(cardList.get(c++), cardList.get(c++), cardList.get(c++)));
     }
-    System.out.println(finalList);
+    System.out.println("------------------------------------------\n");
   }
 
-  public int cardValue(String cardVal) {
+  public void winner() {
+    cardIdentify();
+    result();
+  }
+
+  private int cardValue(String cardVal) {
     int c = 0;
     for (Cards val : Cards.values()) {
       String card = val.getValue();
@@ -78,16 +83,16 @@ public class PokerTable {
     return c;
   }
 
-  public void cardIdentify() {
+  private void cardIdentify() {
     int k = 0;
     int seq[] = new int[3];
     String orinalCard;
 
     for (int j = 0; j < finalList.size(); j++) {
-      String player = pl.getPlayers().get(j);
-      List<String> playerCards = finalList.get(pl.getPlayers().get(j));
+      String pl = playerService.getPlayers().get(j);
+      List<String> playerCards = finalList.get(playerService.getPlayers().get(j));
 
-      orinalCard = finalList.get(player).toString();
+      orinalCard = finalList.get(pl).toString();
       String first = playerCards.get(0);
       String second = playerCards.get(1);
       String third = playerCards.get(2);
@@ -150,15 +155,15 @@ public class PokerTable {
         sum = priority(seq, total, sum);
         System.out.println("Reason : Higher Order");
       }
-      System.out.println("Player : " + pl.getPlayers().get(j));
+      System.out.println("Player : " + playerService.getPlayers().get(j));
       System.out.println("Priority : " + total);
       System.out.println("Sum : " + sum);
       System.out.println("=========================================");
-      result.add(new Game(pl.getPlayers().get(j), sum, orinalCard));
+      result.add(new Game(playerService.getPlayers().get(j), sum, orinalCard));
     }
   }
 
-  public int priority(int seq[], int total, int sum) {
+  private int priority(int seq[], int total, int sum) {
     int minSeq = 2;
     int maxSeq = 14;
     int[] seqValues = {
@@ -175,19 +180,15 @@ public class PokerTable {
     return total;
   }
 
-  public void result() {
+  private void result() {
     result.sort(Comparator.comparing(g -> g.getPriority()));
     Collections.reverse(result);
     Game winner = result.get(0);
-    System.out.println("Winner Player");
-    System.out.println("===========================================");
+    System.out.println("\n*********************************************");
+    System.out.println("♛ Winner Player ♛");
+    System.out.println("*********************************************");
     System.out.println("Name : " + winner.getWinnerName());
     System.out.println("Priority : " + winner.getPriority());
     System.out.println("Card : " + winner.getCards());
-  }
-
-  public void winner() {
-    cardIdentify();
-    result();
   }
 }

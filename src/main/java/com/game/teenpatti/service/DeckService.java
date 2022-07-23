@@ -1,13 +1,15 @@
-package com.teen.patti;
+package com.game.teenpatti.service;
 
+import com.game.teenpatti.model.Cards;
+import com.game.teenpatti.model.Suits;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Deck {
+public class DeckService {
 
-  List<String> collectionCards = new ArrayList<>();
+  private List<String> collectionCards = new ArrayList<>();
 
-  public Deck() {
+  public DeckService() {
     Suits suits[] = Suits.values();
     Cards cards[] = Cards.values();
 

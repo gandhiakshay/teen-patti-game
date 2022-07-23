@@ -1,4 +1,4 @@
-package com.teen.patti;
+package com.game.teenpatti.model;
 
 public class Game {
 
