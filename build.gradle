@@ -1,15 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
+apply from: './gradle/style.gradle'
+
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-	testImplementation 'junit:junit:4.13.2'
-	implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
-	implementation 'org.slf4j:jcl-over-slf4j:2.0.0-alpha7'
-	implementation 'org.slf4j:jul-to-slf4j:2.0.0-alpha7'
-	implementation 'org.slf4j:log4j-over-slf4j:2.0.0-alpha7'
-	testImplementation 'ch.qos.logback:logback-classic:1.3.0-alpha16'
+  testImplementation 'junit:junit:4.13.2'
+  implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
+  implementation 'org.slf4j:jcl-over-slf4j:2.0.0-alpha7'
+  implementation 'org.slf4j:jul-to-slf4j:2.0.0-alpha7'
+  implementation 'org.slf4j:log4j-over-slf4j:2.0.0-alpha7'
+  testImplementation 'ch.qos.logback:logback-classic:1.3.0-alpha16'
 }
